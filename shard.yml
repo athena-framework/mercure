@@ -15,3 +15,8 @@ description: |
 
 authors:
   - George Dietrich <dev@dietrich.pub>
+
+dependencies:
+  jwt:
+    github: crystal-community/jwt
+    version: ~> 1.6

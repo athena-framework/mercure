@@ -1,3 +1,11 @@
+require "jwt"
+
+require "./update"
+
+require "./hub/*"
+require "./token_provider/*"
+require "./token_factory/*"
+
 # Convenience alias to make referencing `Athena::Mercure` types easier.
 alias AMC = Athena::Mercure
 
