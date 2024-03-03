@@ -22,7 +22,7 @@ struct Athena::Mercure::TokenFactory::JWT
         builder.field "mercure", @mercure
 
         if (lifetime = @jwt_lifetime) && !@additional_claims.try &.has_key? "exp"
-          builder.field "exp", lifetime.total_seconds
+          builder.field "exp", (Time.utc + lifetime).to_unix
         end
 
         additional_claims.try &.each do |k, v|

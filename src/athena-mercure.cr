@@ -1,7 +1,12 @@
 require "jwt"
 
+require "http/client"
+require "http/headers"
+
+require "./authorization"
 require "./update"
 
+require "./exceptions/*"
 require "./hub/*"
 require "./token_provider/*"
 require "./token_factory/*"
