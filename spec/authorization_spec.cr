@@ -1,33 +1,9 @@
 require "./spec_helper"
 
-private class AssertingTokenFactory
-  include AMC::TokenFactory::Interface
-
-  getter? called : Bool = false
-
-  def initialize(
-    @token : String,
-    @subscribe : Array(String)? = [] of String,
-    @publish : Array(String)? = [] of String,
-    @additional_claims : Hash(String, String) = {} of String => String
-  )
-  end
-
-  def create(subscribe : Array(String) | ::Nil = [] of String, publish : Array(String) | ::Nil = [] of String, additional_claims : Hash | ::Nil = nil) : String
-    subscribe.should eq @subscribe
-    publish.should eq @publish
-    additional_claims.should eq @additional_claims
-
-    @token
-  ensure
-    @called = true
-  end
-end
-
 # @[ASPEC::TestCase::Focus]
 struct AuthorizationTest < ASPEC::TestCase
   def test_jwt_lifetime : Nil
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: AMC::TokenFactory::JWT.new("looooooooooooongenoughtestsecret", jwt_lifetime: 4000)
@@ -41,14 +17,14 @@ struct AuthorizationTest < ASPEC::TestCase
   end
 
   def test_set_cookie_zero_expiration : Nil
-    token_factory = AssertingTokenFactory.new(
+    token_factory = AMC::Spec::AssertingTokenFactory.new(
       "JWT",
       ["foo"],
       ["bar"],
       {"x-foo" => "baz"},
     )
 
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: token_factory
@@ -68,14 +44,14 @@ struct AuthorizationTest < ASPEC::TestCase
   end
 
   def test_set_cookie_default_expiration : Nil
-    token_factory = AssertingTokenFactory.new(
+    token_factory = AMC::Spec::AssertingTokenFactory.new(
       "JWT",
       ["foo"],
       ["bar"],
       {"x-foo" => "baz"},
     )
 
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: token_factory
@@ -95,9 +71,9 @@ struct AuthorizationTest < ASPEC::TestCase
   end
 
   def test_clear_cookie : Nil
-    token_factory = AssertingTokenFactory.new("JWT")
+    token_factory = AMC::Spec::AssertingTokenFactory.new("JWT")
 
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: token_factory
@@ -116,7 +92,7 @@ struct AuthorizationTest < ASPEC::TestCase
 
   @[DataProvider("applicable_cookie_domains")]
   def test_applicable_cookie_domains(expected : String?, hub_url : String, request_url : String) : Nil
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       hub_url,
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: AMC::TokenFactory::JWT.new("looooooooooooongenoughtestsecret", jwt_lifetime: 4000)
@@ -144,7 +120,7 @@ struct AuthorizationTest < ASPEC::TestCase
 
   @[DataProvider("nonapplicable_cookie_domains")]
   def test_nonapplicable_cookie_domains(hub_url : String, request_url : String) : Nil
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       hub_url,
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: AMC::TokenFactory::JWT.new("looooooooooooongenoughtestsecret", jwt_lifetime: 4000)
@@ -168,7 +144,7 @@ struct AuthorizationTest < ASPEC::TestCase
   end
 
   def test_set_multiple_cookies : Nil
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: AMC::TokenFactory::JWT.new("looooooooooooongenoughtestsecret", jwt_lifetime: 4000)
@@ -186,14 +162,14 @@ struct AuthorizationTest < ASPEC::TestCase
   end
 
   def test_nil_cookie_topics : Nil
-    token_factory = AssertingTokenFactory.new(
+    token_factory = AMC::Spec::AssertingTokenFactory.new(
       "JWT",
       nil,
       nil,
       {"x-foo" => "baz"},
     )
 
-    registry = AMC::Hub::Registry.new(AMC::Hub::Mock.new(
+    registry = AMC::Hub::Registry.new(AMC::Spec::MockHub.new(
       "https://example.com/.well-known/mercure",
       AMC::TokenProvider::Static.new("JWT"),
       token_factory: token_factory

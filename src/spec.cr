@@ -1,5 +1,5 @@
-module Athena::Mercure
-  struct Hub::Mock
+module Athena::Mercure::Spec
+  struct MockHub
     include Athena::Mercure::Hub::Interface
 
     getter url : String
@@ -23,6 +23,30 @@ module Athena::Mercure
 
     def publish(update : AMC::Update) : String
       @publisher.call update
+    end
+  end
+
+  class AssertingTokenFactory
+    include AMC::TokenFactory::Interface
+
+    getter? called : Bool = false
+
+    def initialize(
+      @token : String,
+      @subscribe : Array(String)? = [] of String,
+      @publish : Array(String)? = [] of String,
+      @additional_claims : Hash(String, String) = {} of String => String
+    )
+    end
+
+    def create(subscribe : Array(String) | ::Nil = [] of String, publish : Array(String) | ::Nil = [] of String, additional_claims : Hash | ::Nil = nil) : String
+      subscribe.should eq @subscribe
+      publish.should eq @publish
+      additional_claims.should eq @additional_claims
+
+      @token
+    ensure
+      @called = true
     end
   end
 end

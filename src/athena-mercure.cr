@@ -4,6 +4,7 @@ require "http/client"
 require "http/headers"
 
 require "./authorization"
+require "./discovery"
 require "./update"
 
 require "./exceptions/*"

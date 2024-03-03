@@ -3,8 +3,8 @@ require "../spec_helper"
 describe AMC::Hub::Interface do
   describe "#hub" do
     it "explicit name" do
-      foo_hub = AMC::Hub::Mock.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
-      bar_hub = AMC::Hub::Mock.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
+      foo_hub = AMC::Spec::MockHub.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
+      bar_hub = AMC::Spec::MockHub.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
 
       registry = AMC::Hub::Registry.new foo_hub, {"foo" => foo_hub, "bar" => bar_hub} of String => AMC::Hub::Interface
 
@@ -12,8 +12,8 @@ describe AMC::Hub::Interface do
     end
 
     it "default hub" do
-      foo_hub = AMC::Hub::Mock.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
-      bar_hub = AMC::Hub::Mock.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
+      foo_hub = AMC::Spec::MockHub.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
+      bar_hub = AMC::Spec::MockHub.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
 
       registry = AMC::Hub::Registry.new foo_hub, {"foo" => foo_hub, "bar" => bar_hub} of String => AMC::Hub::Interface
 
@@ -21,7 +21,7 @@ describe AMC::Hub::Interface do
     end
 
     it "missing hub" do
-      foo_hub = AMC::Hub::Mock.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
+      foo_hub = AMC::Spec::MockHub.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
 
       registry = AMC::Hub::Registry.new foo_hub, {"foo" => foo_hub} of String => AMC::Hub::Interface
 
@@ -32,8 +32,8 @@ describe AMC::Hub::Interface do
   end
 
   it "#hubs" do
-    foo_hub = AMC::Hub::Mock.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
-    bar_hub = AMC::Hub::Mock.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
+    foo_hub = AMC::Spec::MockHub.new("https://foo.com", AMC::TokenProvider::Static.new("FOO")) { "foo" }
+    bar_hub = AMC::Spec::MockHub.new("https://bar.com", AMC::TokenProvider::Static.new("BAR")) { "bar" }
 
     registry = AMC::Hub::Registry.new foo_hub, hubs = {"foo" => foo_hub, "bar" => bar_hub} of String => AMC::Hub::Interface
 
