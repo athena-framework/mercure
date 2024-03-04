@@ -15,7 +15,7 @@ class Athena::Mercure::Authorization
     additional_claims : Hash? = nil,
     hub_name : String? = nil
   )
-    self.update_cokies request, response, hub_name, self.create_cookie(request, subscribe, publish, additional_claims, hub_name)
+    self.update_cookies request, response, hub_name, self.create_cookie(request, subscribe, publish, additional_claims, hub_name)
   end
 
   def clear_cookie(
@@ -23,7 +23,7 @@ class Athena::Mercure::Authorization
     response : HTTP::Server::Response,
     hub_name : String? = nil
   ) : Nil
-    self.update_cokies request, response, hub_name, self.create_clear_cookie(request, hub_name)
+    self.update_cookies request, response, hub_name, self.create_clear_cookie(request, hub_name)
   end
 
   def create_cookie(
@@ -94,7 +94,7 @@ class Athena::Mercure::Authorization
 
     host_segments = host.split '.'
 
-    host_segments[0..-2].each_with_index do |segment, idx|
+    host_segments[0..-2].each_with_index do |_, idx|
       current_domain = host_segments[idx..].join '.'
 
       target = ".#{current_domain}"
@@ -107,7 +107,7 @@ class Athena::Mercure::Authorization
     raise AMC::Exceptions::InvalidArgument.new "Unable to create authorization cookie for a hub on the different second-level domain '#{cookie_domain}'."
   end
 
-  private def update_cokies(
+  private def update_cookies(
     request : HTTP::Request,
     response : HTTP::Server::Response,
     hub_name : String?,

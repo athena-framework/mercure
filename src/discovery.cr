@@ -4,7 +4,7 @@ class Athena::Mercure::Discovery
   ); end
 
   def add_link(request : HTTP::Request, response : HTTP::Server::Response, hub_name : String? = nil) : Nil
-    return if self.is_preflight_request? request
+    return if self.preflight_request? request
 
     hub = @hub_registry.hub hub_name
 
@@ -12,7 +12,7 @@ class Athena::Mercure::Discovery
     response.headers.add "link", %(<#{hub.public_url}>; rel="mercure")
   end
 
-  private def is_preflight_request?(request : HTTP::Request) : Bool
+  private def preflight_request?(request : HTTP::Request) : Bool
     "options" == request.method.downcase && request.headers.has_key? "access-control-request-method"
   end
 end
